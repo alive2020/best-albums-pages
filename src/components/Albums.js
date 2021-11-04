@@ -4,6 +4,8 @@ const Albums = ({ albums, loading }) => {
   if (loading) {
     return <h2>Loading...</h2>;
   }
+
+  
   return (
     <div>
       <ul className='list-group mb-4'>
@@ -12,6 +14,7 @@ const Albums = ({ albums, loading }) => {
                   {album.title}
               </li>
           ))}
+
       </ul>
     </div>
   );
