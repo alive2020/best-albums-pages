@@ -22,11 +22,11 @@ const Pagination = ({
           </a>
         </li> */}
         {pageNumbers.map((number) => (
-          <li key={number} className='page-item'>
+          <li key={number} className='page-item '>
             <Link
               onClick={() => paginate(number)}
               to={`/${number}`}
-              className='page-link'
+              className='page-link font-weitht-1 text-secondary'
             >
               {number}
             </Link>

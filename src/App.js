@@ -10,6 +10,7 @@ import './App.css';
 import Albums from './components/Albums';
 import Pagination from './components/Pagination';
 import LoginForm from './components/LoginForm';
+import './styles/myStyles.css';
 
 function App() {
   const adminUser = {
@@ -31,7 +32,7 @@ function App() {
       });
       return true;
     } else {
-      setError('Details do not match');
+      setError('You have entered an invalid email or password!');
       return false;
     }
   };
@@ -57,27 +58,6 @@ function App() {
     fetchAlbums();
   }, []);
 
-  let clientId = 'MDY3cSHqf2obvIj97MwhF3Dd787RcAnErVVJlTsgjbE';
-  let endpoint = `https://api.unsplash.com/photos?query=band&client_id=${clientId}`;
-
-  // useEffect(() => {
-  //   const fetchImages = async () => {
-  //     setLoading(true);
-  //     const res = await axios.get(endpoint);
-  //     setImages(res.json());
-  //     setLoading(false);
-  //   };
-
-  //   fetchImages();
-  // }, []);
-
-  // fetch(endpoint)
-  //   .then(function (response) {
-  //     return response.json();
-  //   })
-  //   .then(function (jsonData) {
-  //     setImages(jsonData);
-  //   });
   // Get current albums
   const indexOfLastAlbum = currentPage * albumsPerPage;
   const indexOfFirstAlbum = indexOfLastAlbum - albumsPerPage;
@@ -85,8 +65,6 @@ function App() {
 
   //Change page
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
-  // const nextPage = (pageNumber) => setCurrentPage(pageNumber + 1);
-  // const prevPage = (pageNumber) => setCurrentPage(pageNumber - 1);
 
   return (
     <Router>
@@ -96,23 +74,28 @@ function App() {
         </Route>
         <Route path='/'>
           {user.isUserAuthenticated ? (
-            <div className='container mt-5'>
-              <h1 className='text-primary mb-3 text-center'>
-                The Best Albums 2021
-              </h1>
-              <p onClick={logOut}>log out</p>
-              <Albums
-                albums={currentAlbums}
-                loading={loading}
-                images={images}
-              />
-              <Pagination
-                albumsPerPage={albumsPerPage}
-                totalAlbums={albums.length}
-                paginate={paginate}
-                // nextPage={nextPage}
-                // prevPage={prevPage}
-              />
+            <div className='homeContainer'>
+              <div className='container logoutBtn'>
+                <button className='btn btn-secondary btn-sm ' onClick={logOut}>
+                  Logout
+                </button>
+              </div>
+              <div className='container mt-5 albumsContainer'>
+                <h1 className='mb-3 text-center text-uppercase homeTitle'>
+                  The Best Albums of 2021
+                </h1>
+
+                <Albums
+                  albums={currentAlbums}
+                  loading={loading}
+                  images={images}
+                />
+                <Pagination
+                  albumsPerPage={albumsPerPage}
+                  totalAlbums={albums.length}
+                  paginate={paginate}
+                />
+              </div>
             </div>
           ) : (
             <Redirect to='/login' />
@@ -120,29 +103,6 @@ function App() {
         </Route>
       </Switch>
     </Router>
-
-    // <div className='container mt-5 '>
-    //   <div>
-    //     {user.email !== '' ? (
-    //       <div className='m-2 position-right'>
-    //         <button className='btn btn-secondary btn-sm ' onClick={Logout}>
-    //           Logout
-    //         </button>
-    //       </div>
-    //     ) : (
-    //       <LoginForm Login={Login} error={error} />
-    //     )}
-    //   </div>
-    //   <h1 className='text-primary mb-3 text-center'>The Best Albums 2021</h1>
-    //   <Albums albums={currentAlbums} loading={loading} images={images} />
-    //   <Pagination
-    //     albumsPerPage={albumsPerPage}
-    //     totalAlbums={albums.length}
-    //     paginate={paginate}
-    //     // nextPage={nextPage}
-    //     // prevPage={prevPage}
-    //   />
-    // </div>
   );
 }
 
