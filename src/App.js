@@ -85,6 +85,7 @@ function App() {
                   The Best Albums of 2021
                 </h1>
 
+                <br />
                 <Albums
                   albums={currentAlbums}
                   loading={loading}

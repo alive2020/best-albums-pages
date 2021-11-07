@@ -14,8 +14,8 @@ const Pagination = ({
   }
 
   return (
-    <nav>
-      <ul className='pagination justify-content-center'>
+    <nav className='d-flex flex-wrap justify-content-center '>
+      <ul className='pagination d-flex flex-wrap justify-content-center'>
         {/* <li className='page-item'>
           <a className='page-link' href='#' onClick={() => prevPage()}>
             Prev
