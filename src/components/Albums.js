@@ -1,7 +1,7 @@
 import React from 'react';
 import '../styles/myStyles.css';
 
-const Albums = ({ albums, loading, images, edit }) => {
+const Albums = ({ albums, loading, edit, deleteAlbum }) => {
   if (loading) {
     return <h2>Loading...</h2>;
   }
@@ -20,7 +20,7 @@ const Albums = ({ albums, loading, images, edit }) => {
                 <button onClick={() => edit(album.title, album.id)}>
                   Edit
                 </button>
-                <button>Delete</button>
+                <button onClick={() => deleteAlbum(album.id)}>Delete</button>
               </span>
             </li>
           </div>

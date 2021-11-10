@@ -54,7 +54,8 @@ function App() {
         'https://jsonplaceholder.typicode.com/albums'
       );
       const response = res.data;
-      setAlbums(response.reverse());
+      // setAlbums(response.reverse());
+      setAlbums(response);
       setLoading(false);
     };
 
@@ -120,6 +121,15 @@ function App() {
     setaddPop({ type: 'Edit', visible: true, id: id });
   }
 
+  const deleteAlbum = async (id) => {
+    const res = await axios.delete(
+      `https://jsonplaceholder.typicode.com/albums/${id}`
+    );
+    const response = res.data;
+    setAlbums(response);
+    setLoading(false);
+  };
+
   return (
     <Router>
       <Switch>
@@ -149,6 +159,7 @@ function App() {
                   loading={loading}
                   images={images}
                   edit={doEdit}
+                  deleteAlbum={deleteAlbum}
                 />
                 <Pagination
                   albumsPerPage={albumsPerPage}
