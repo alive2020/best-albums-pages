@@ -1,12 +1,11 @@
 import React from 'react';
 import '../styles/myStyles.css';
 
-const Albums = ({ albums, loading, images }) => {
+const Albums = ({ albums, loading, images, edit }) => {
   if (loading) {
     return <h2>Loading...</h2>;
   }
 
-  console.log(images.map((img) => img.urls.small));
   return (
     <div>
       <ul className='list-group mb-4'>
@@ -16,6 +15,12 @@ const Albums = ({ albums, loading, images }) => {
               <img src='https://via.placeholder.com/100' alt='' />
               <span className='pl-3 text-uppercase d-flex align-items-center '>
                 {album.title}
+              </span>
+              <span>
+                <button onClick={() => edit(album.title, album.id)}>
+                  Edit
+                </button>
+                <button>Delete</button>
               </span>
             </li>
           </div>

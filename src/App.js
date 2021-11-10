@@ -44,6 +44,8 @@ function App() {
   const [loading, setLoading] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [albumsPerPage] = useState(5);
+  const [addPop, setaddPop] = useState({ visible: false, type: 'Add', id: '' });
+  const [input, setInput] = useState('');
 
   useEffect(() => {
     const fetchAlbums = async () => {
@@ -51,7 +53,8 @@ function App() {
       const res = await axios.get(
         'https://jsonplaceholder.typicode.com/albums'
       );
-      setAlbums(res.data);
+      const response = res.data;
+      setAlbums(response.reverse());
       setLoading(false);
     };
 
@@ -62,9 +65,60 @@ function App() {
   const indexOfLastAlbum = currentPage * albumsPerPage;
   const indexOfFirstAlbum = indexOfLastAlbum - albumsPerPage;
   const currentAlbums = albums.slice(indexOfFirstAlbum, indexOfLastAlbum);
-
   //Change page
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
+  const handleAdd = async () => {
+    // const res = await fetch('https://jsonplaceholder.typicode.com/albums', {
+    //   method: 'POST',
+    //   body: JSON.stringify({
+    //     title: input,
+    //     userId: 1,
+    //   }),
+    //   headers: {
+    //     'Content-type': 'application/json; charset=UTF-8',
+    //   },
+    // })
+    const res = await axios.post(
+      'https://jsonplaceholder.typicode.com/albums',
+      {
+        title: input,
+        userId: 1,
+      }
+    );
+    const response = res.data;
+    console.log('add', response);
+    // .then((res) => res.json())
+    // .then((json) => {
+    //   let temp = albums;
+    //   temp.unshift(json);
+    //   setAlbums(temp);
+    //   setaddPop(false);
+    //   setInput('');
+    // });
+  };
+
+  const handleChange = async () => {
+    await axios
+      .patch(`https://jsonplaceholder.typicode.com/albums/${addPop.id}`, {
+        title: input,
+      })
+      .then((res) => {
+        console.log(res.data);
+        let temp = albums;
+        let thatAlbum = temp.filter((adad) => adad.id === addPop.id)[0];
+        thatAlbum.title = input;
+        temp = temp.filter((it) => it.id != addPop.id);
+        temp.unshift(thatAlbum);
+        setAlbums(temp);
+        setaddPop({ type: 'Add', id: '', visible: false });
+      })
+      .catch((e) => console.log(e));
+  };
+
+  function doEdit(val, id) {
+    setInput(val);
+    setaddPop({ type: 'Edit', visible: true, id: id });
+  }
 
   return (
     <Router>
@@ -84,18 +138,69 @@ function App() {
                 <h1 className='mb-3 text-center text-uppercase homeTitle'>
                   The Best Albums of 2021
                 </h1>
-
+                <button
+                  onClick={() => setaddPop({ visible: true, type: 'Add' })}
+                >
+                  Add album
+                </button>
                 <br />
                 <Albums
                   albums={currentAlbums}
                   loading={loading}
                   images={images}
+                  edit={doEdit}
                 />
                 <Pagination
                   albumsPerPage={albumsPerPage}
                   totalAlbums={albums.length}
                   paginate={paginate}
                 />
+              </div>
+              <div
+                style={{
+                  display: addPop.visible ? 'flex' : 'none',
+                  position: 'absolute',
+                  top: 0,
+                  left: 0,
+                  zIndex: 99,
+                  width: '100vw',
+                  height: '100vh',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}
+              >
+                <div
+                  style={{
+                    background: 'yellow',
+                    width: 300,
+                    height: 300,
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                  }}
+                >
+                  <div>
+                    <input
+                      placeholder='title'
+                      value={input}
+                      onChange={(e) => setInput(e.target.value)}
+                    />
+                    <br />
+                    <button
+                      onClick={addPop === 'Add' ? handleAdd : handleChange}
+                    >
+                      {addPop.type}
+                    </button>
+                    <button
+                      onClick={() => {
+                        setInput('');
+                        setaddPop({ ...addPop, visible: false, id: '' });
+                      }}
+                    >
+                      Cancel
+                    </button>
+                  </div>
+                </div>
               </div>
             </div>
           ) : (
