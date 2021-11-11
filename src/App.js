@@ -40,13 +40,15 @@ function App() {
     setUser({ email: '', isUserAuthenticated: false });
   };
   const [albums, setAlbums] = useState([]);
+  // let alb = [];
   const [images, setImages] = useState([]);
   const [loading, setLoading] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [albumsPerPage] = useState(5);
   const [addPop, setaddPop] = useState({ visible: false, type: 'Add', id: '' });
   const [input, setInput] = useState('');
-
+  const [tester, settester] = useState(1);
+  
   useEffect(() => {
     const fetchAlbums = async () => {
       setLoading(true);
@@ -56,6 +58,9 @@ function App() {
       const response = res.data;
       // setAlbums(response.reverse());
       setAlbums(response);
+      // alb = response;
+      // console.log(alb);
+
       setLoading(false);
     };
 
@@ -79,23 +84,23 @@ function App() {
     //     'Content-type': 'application/json; charset=UTF-8',
     //   },
     // })
-    const res = await axios.post(
-      'https://jsonplaceholder.typicode.com/albums',
-      {
-        title: input,
-        userId: 1,
-      }
-    );
-    const response = res.data;
-    console.log('add', response);
-    // .then((res) => res.json())
-    // .then((json) => {
-    //   let temp = albums;
-    //   temp.unshift(json);
-    //   setAlbums(temp);
-    //   setaddPop(false);
-    //   setInput('');
-    // });
+    try {
+      const res = await axios.post(
+        'https://jsonplaceholder.typicode.com/albums',
+        {
+          title: input,
+          userId: 1,
+        }
+      );
+      const response = res.data;
+      let temp = albums;
+      temp.unshift(response);
+      setAlbums(temp);
+      setaddPop({ ...addPop, visible: false });
+      setInput('');
+    } catch (e) {
+      console.log(e);
+    }
   };
 
   const handleChange = async () => {
@@ -120,14 +125,18 @@ function App() {
     setInput(val);
     setaddPop({ type: 'Edit', visible: true, id: id });
   }
-
   const deleteAlbum = async (id) => {
-    const res = await axios.delete(
-      `https://jsonplaceholder.typicode.com/albums/${id}`
-    );
-    const response = res.data;
-    setAlbums(response);
-    setLoading(false);
+    await axios
+      .delete(`https://jsonplaceholder.typicode.com/albums/${id}`)
+      .then(() => {
+        let temp = albums;
+        // let thatAlbum = temp.filter((el) => el.id === id)[0];
+        // thatAlbum.title = input;
+        temp = temp.filter((it) => it.id != id);
+        // temp.unshift(thatAlbum);
+        setAlbums(temp);
+      })
+      .catch((e) => console.log(e));
   };
 
   return (
@@ -146,8 +155,14 @@ function App() {
               </div>
               <div className='container mt-5 albumsContainer'>
                 <h1 className='mb-3 text-center text-uppercase homeTitle'>
-                  The Best Albums of 2021
+                  The Best Albums of 2021{`${tester}`}
                 </h1>
+                {/* <button
+                  onClick={() => {
+                    settester(tester + 1);
+                    console.log(tester);
+                  }}
+                > */}
                 <button
                   onClick={() => setaddPop({ visible: true, type: 'Add' })}
                 >
@@ -198,7 +213,7 @@ function App() {
                     />
                     <br />
                     <button
-                      onClick={addPop === 'Add' ? handleAdd : handleChange}
+                      onClick={addPop.type === 'Add' ? handleAdd : handleChange}
                     >
                       {addPop.type}
                     </button>
